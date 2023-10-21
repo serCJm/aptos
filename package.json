@@ -5,7 +5,7 @@
 	"main": "main.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"base": "ts-node main.ts"
+		"aptos": "ts-node main.ts"
 	},
 	"keywords": [],
 	"author": "",
