@@ -1,5 +1,4 @@
 *.env
 *.txt
 node_modules
-config.ts
 .vscode
