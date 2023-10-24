@@ -83,7 +83,10 @@ export class WalletManager {
 			rawTX,
 		);
 
-		await this.client.waitForTransaction(txHash, { checkSuccess: true });
+		await this.client.waitForTransaction(txHash, {
+			checkSuccess: true,
+			timeoutSecs: 60,
+		});
 
 		logger.success`Transaction ${customMessage}: ${
 			WalletManager.#explorer
