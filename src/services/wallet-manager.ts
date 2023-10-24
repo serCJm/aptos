@@ -1,8 +1,10 @@
 import { AptosAccount, AptosClient, HexString } from "aptos";
+import { logger } from "../utils/logger.js";
 import { getDeadline } from "../utils/utils.js";
 
 export class WalletManager {
 	static #rpcUrl = "https://rpc.ankr.com/http/aptos/v1";
+	static #explorer = "https://apscan.io";
 	static #name: string;
 	static #account: AptosAccount | null = null;
 	static #client: AptosClient | null = null;
@@ -77,7 +79,15 @@ export class WalletManager {
 			this.account,
 			rawTX,
 		);
-		console.log(txHash);
+
 		await this.client.waitForTransaction(txHash, { checkSuccess: true });
+
+		WalletManager.#printSuccess(txHash);
+	}
+
+	static #printSuccess(txHash: string, customMessage?: string) {
+		logger.success`Transaction ${customMessage}: ${
+			WalletManager.#explorer
+		}/tx/${txHash}`;
 	}
 }
