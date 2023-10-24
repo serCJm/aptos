@@ -32,10 +32,13 @@ export abstract class DEX extends BaseModule {
 	async #setup(): Promise<void> {
 		[this.fromToken, this.toToken, this.balances] =
 			await TokenManager.getRandomTokenPair(this.excludedTokens);
+		console.log(this.fromToken, this.toToken, this.balances);
+		if (!this.balances[this.toToken])
+			await TokenManager.registerToken(this.toToken);
 	}
 
 	protected setupAmount() {
-		const fromBalance = this.balances[this.fromToken]!;
+		const fromBalance = this.balances[this.fromToken];
 		const [minPercent = 100, maxPercent = 100] =
 			TokenManager.getMinMaxConfig(this.fromToken);
 
@@ -105,9 +108,8 @@ export abstract class DEX extends BaseModule {
 	public async run() {
 		await this.#setup();
 
-		if ((this.config as DexConfig).SWAP) {
-			await this.swap();
-		}
+		await this.swap();
+
 		if ((this.config as DexConfig).ADD_LIQUIDITY && this.addLiquidity) {
 			await countdownTimer(60, 120);
 
