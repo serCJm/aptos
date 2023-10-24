@@ -85,10 +85,6 @@ export class WalletManager {
 
 		await this.client.waitForTransaction(txHash, { checkSuccess: true });
 
-		WalletManager.#printSuccess(txHash, customMessage);
-	}
-
-	static #printSuccess(txHash: string, customMessage?: string) {
 		logger.success`Transaction ${customMessage}: ${
 			WalletManager.#explorer
 		}/tx/${txHash}`;
