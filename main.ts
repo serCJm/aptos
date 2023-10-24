@@ -3,15 +3,10 @@ import { PRIVATE_KEYS } from "./secrets.js";
 import { runModules } from "./src/runModules.js";
 import { WalletManager } from "./src/services/wallet-manager.js";
 import { countdownTimer } from "./src/utils/countdownTimer.js";
-import { errorHandler } from "./src/utils/errorHandler.js";
 import { logger } from "./src/utils/logger.js";
 
 process.on("unhandledRejection", (reason, promise) => {
-	if (reason instanceof Error) {
-		errorHandler(reason);
-	} else {
-		console.error("Unhandled Rejection at:", promise, "reason:", reason);
-	}
+	console.error("Unhandled Rejection at:", promise, "\n", "reason:", reason);
 });
 
 async function processPrivateKeys(privateKeyData: [string, string]) {
