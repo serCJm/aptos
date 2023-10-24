@@ -1,4 +1,5 @@
 import { Move_Resources } from "aptos";
+import { BaseModule } from "./modules/baseModule.js";
 import { TOKENS } from "./services/token-manager.js";
 
 // ORDER
@@ -34,3 +35,27 @@ export interface MoveCoinResource extends Move_Resources {
 	type: string;
 	data: CoinData;
 }
+
+// MODULES
+export type BaseModuleDerivedClass = new (...args: any[]) => BaseModule;
+export type ModuleConfigType = {
+	ENABLED: boolean;
+	[key: string]: any;
+};
+
+type BaseConfig = {
+	ENABLED: boolean;
+};
+
+export type DexConfig = BaseConfig & {
+	ENABLED: boolean;
+	SWAP: boolean;
+	ADD_LIQUIDITY: boolean;
+	EXCLUDED_TOKENS: TokensType[];
+};
+
+export type LendingProtocolConfig = BaseConfig & {
+	VOLUME_MAKER: [number, number] | [];
+};
+
+export type ModulesConfig = BaseConfig | DexConfig | LendingProtocolConfig;
