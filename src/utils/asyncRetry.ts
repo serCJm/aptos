@@ -21,7 +21,7 @@ export async function asyncRetry<U extends any[]>(
 				retries++;
 				logger.info`Retrying operation in ${
 					retryDelayMs / 1000
-				} seconds...`;
+				} seconds...\n`;
 				await setTimeout(retryDelayMs);
 			} else {
 				throw error;
