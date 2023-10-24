@@ -3,12 +3,14 @@ import { BaseModule } from "./modules/baseModule.js";
 import { TOKENS } from "./services/token-manager.js";
 
 // ORDER
-export const ORDER: Record<string, OrderType> = {
+export type OrderKye = "RANDOM" | "ONE_RANDOM" | "DEFAULT";
+export type OrderType = "random" | "one_random" | "default";
+
+export const ORDER: Record<OrderKye, OrderType> = {
 	RANDOM: "random",
 	ONE_RANDOM: "one_random",
 	DEFAULT: "default",
 } as const;
-export type OrderType = "random" | "one_random" | "default";
 
 // TOKENS
 export type TokensType = (typeof TOKENS)[keyof typeof TOKENS];
