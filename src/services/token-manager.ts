@@ -1,4 +1,5 @@
 import { MoveCoinResource, TokensDataType, TokensType } from "../types.js";
+import { getRandomIndex } from "../utils/utils.js";
 import { WalletManager } from "./wallet-manager.js";
 
 export const TOKENS = {
@@ -100,6 +101,26 @@ export class TokenManager {
 		return minMax;
 	}
 
+	public static async getRandomTokenPair(
+		excludedTokens: Set<TokensType>,
+		onlyWithBalance = false,
+	): Promise<[TokensType, TokensType, Record<TokensType, number>]> {
+		const balances = await this.getBalances();
+
+		const balancesArr = (
+			Object.entries(balances) as [TokensType, number][]
+		).filter((arr) => !excludedTokens.has(arr[0]));
+
+		let randIndex = getRandomIndex(0, balancesArr.length);
+		const token1 = balancesArr.splice(randIndex, 1)[0][0];
+		randIndex = getRandomIndex(0, balancesArr.length);
+		const token2 = onlyWithBalance
+			? balancesArr[randIndex][0]
+			: Object.values(TOKENS)[randIndex];
+
+		return [token1, token2, balances];
+	}
+
 	public static async registerToken(token: TokensType) {
 		const moveFunction = "0x1::managed_coin::register";
 		const type_arguments = [TokenManager.getAddress(token)];
@@ -109,5 +130,7 @@ export class TokenManager {
 			type_arguments: type_arguments,
 			arguments: _arguments,
 		};
+
+		await WalletManager.sendTransaction(txPayload);
 	}
 }
