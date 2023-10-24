@@ -20,12 +20,12 @@ export class LiquidSwap extends DEX {
 			TokenManager.getAddress(this.toToken),
 			`${LiquidSwap.contractAddress}::curves::Uncorrelated`,
 		];
-		const _arguments = [amount.toString(), ""];
+		const txArgs = [amount.toString(), ""];
 
 		const txPayload = {
 			function: moveFunction,
 			type_arguments: type_arguments,
-			arguments: _arguments,
+			arguments: txArgs,
 		};
 
 		const message = this.createSwapMessage(amount);
