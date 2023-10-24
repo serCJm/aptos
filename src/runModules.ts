@@ -1,27 +1,39 @@
-import { LiquidSwap } from "./modules/liquidSwap.js";
+import {
+	GLOBAL_CONFIG,
+	MODULES_CONFIG,
+	MODULE_MAP,
+} from "../MODULES_CONFIG.js";
+import { BaseModule } from "./modules/baseModule.js";
+import { BaseModuleDerivedClass, ORDER } from "./types.js";
+import { countdownTimer } from "./utils/countdownTimer.js";
+import { shuffleArr } from "./utils/utils.js";
+
+async function getEnabledModules(): Promise<BaseModuleDerivedClass[]> {
+	const enabledModules = Object.values(MODULE_MAP).filter(
+		(module) => MODULES_CONFIG[module.name].ENABLED,
+	);
+
+	if (enabledModules.length === 0) return [];
+
+	switch (GLOBAL_CONFIG.ORDER) {
+		case ORDER.RANDOM:
+			return shuffleArr(enabledModules);
+		case ORDER.ONE_RANDOM:
+			return [shuffleArr(enabledModules)[0]];
+		default:
+			return enabledModules;
+	}
+}
 
 export async function runModules() {
-	const module = new LiquidSwap();
+	const enabledModules = await getEnabledModules();
 
-	await module.run();
+	const [minTime, maxTime] = GLOBAL_CONFIG.MINMAX_MODULES_WAIT_TIME;
 
-	// const enabledModules = await getEnabledModules();
-	// if (MODULES_CONFIG[Bridge.name].ENABLED) enabledModules.unshift(Bridge);
+	for (const [index, module] of enabledModules.entries()) {
+		await BaseModule.runModule(module);
 
-	// const [minTime, maxTime] = GLOBAL_CONFIG.MINMAX_MODULES_WAIT_TIME;
-
-	// for (const [index, module] of enabledModules.entries()) {
-	// 	try {
-	// 		let chain;
-	// 		if (module instanceof Bridge) chain = CHAINS.ETH;
-
-	// 		await BaseModule.runModule(module, chain);
-
-	// 		const notLast = index < enabledModules.length - 1;
-	// 		if (notLast) await countdownTimer(minTime, maxTime);
-	// 	} catch (error) {
-	// 		logger.error`Module failed, switching to next one...`;
-	// 		console.log(error);
-	// 	}
-	// }
+		const notLast = index < enabledModules.length - 1;
+		if (notLast) await countdownTimer(minTime, maxTime);
+	}
 }
