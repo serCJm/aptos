@@ -9,6 +9,7 @@ export const TOKENS = {
 	lzWETH: "lzWETH",
 	stAPT: "stAPT",
 	tAPT: "tAPT",
+	ceBNB: "ceBNB",
 } as const;
 
 export class TokenManager {
@@ -60,6 +61,14 @@ export class TokenManager {
 				"0x84d7aeef42d38a5ffc3ccef853e1b82e4958659d16a7de736a29c55fbbeb0114::staked_aptos_coin::StakedAptosCoin",
 			minMaxPercent: [50, 75], // percents or empty for full amount
 		},
+		[TOKENS.ceBNB]: {
+			name: "Celer Binance Coin",
+			chainId: 1,
+			decimals: 8,
+			address:
+				"0x8d87a65ba30e09357fa2edea2c80dbac296e5dec2b18287113500b902942929d::celer_coin_manager::BnbCoin",
+			minMaxPercent: [50, 75], // percents or empty for full amount
+		},
 	};
 
 	public static getAddress(token: TokensType) {
@@ -107,16 +116,21 @@ export class TokenManager {
 	): Promise<[TokensType, TokensType, Record<TokensType, number>]> {
 		const balances = await this.getBalances();
 
-		const balancesArr = (
+		const tokensWithBalance = (
 			Object.entries(balances) as [TokensType, number][]
-		).filter((arr) => !excludedTokens.has(arr[0]));
+		).filter((arr) => !excludedTokens.has(arr[0]) && arr[1] > 0);
 
-		let randIndex = getRandomIndex(0, balancesArr.length);
-		const token1 = balancesArr.splice(randIndex, 1)[0][0];
-		randIndex = getRandomIndex(0, balancesArr.length);
-		const token2 = onlyWithBalance
-			? balancesArr[randIndex][0]
-			: Object.values(TOKENS)[randIndex];
+		const randIndex = getRandomIndex(tokensWithBalance.length);
+		const token1 = tokensWithBalance.splice(randIndex, 1)[0][0];
+
+		const allTokens = Object.values(TOKENS);
+
+		let token2;
+		do {
+			token2 = onlyWithBalance
+				? tokensWithBalance[getRandomIndex(tokensWithBalance.length)][0]
+				: allTokens[getRandomIndex(allTokens.length, 0)];
+		} while (token1 === token2);
 
 		return [token1, token2, balances];
 	}
@@ -131,6 +145,7 @@ export class TokenManager {
 			arguments: _arguments,
 		};
 
-		await WalletManager.sendTransaction(txPayload);
+		const message = `register token ${token}`;
+		await WalletManager.sendTransaction(txPayload, message);
 	}
 }
