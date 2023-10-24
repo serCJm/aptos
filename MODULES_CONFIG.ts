@@ -1,12 +1,18 @@
 import { LiquidSwap } from "./src/modules/liquidSwap.js";
+import { PancakeSwap } from "./src/modules/pancakeSwap.js";
 import { ModulesConfig, ORDER } from "./src/types.js";
 
 export const MODULE_MAP = {
 	LiquidSwap,
+	PancakeSwap,
 } as const;
 
 export const MODULES_CONFIG: Record<string, ModulesConfig> = {
 	[LiquidSwap.name]: {
+		ENABLED: true,
+		EXCLUDED_TOKENS: [],
+	},
+	[PancakeSwap.name]: {
 		ENABLED: true,
 		EXCLUDED_TOKENS: [],
 	},
