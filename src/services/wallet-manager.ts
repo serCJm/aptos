@@ -62,7 +62,10 @@ export class WalletManager {
 		return resources;
 	}
 
-	public static async sendTransaction(txPayload: any) {
+	public static async sendTransaction(
+		txPayload: any,
+		customMessage?: string,
+	) {
 		const maxGasAmount = await this.client.estimateMaxGasAmount(
 			WalletManager.address,
 		);
@@ -82,7 +85,7 @@ export class WalletManager {
 
 		await this.client.waitForTransaction(txHash, { checkSuccess: true });
 
-		WalletManager.#printSuccess(txHash);
+		WalletManager.#printSuccess(txHash, customMessage);
 	}
 
 	static #printSuccess(txHash: string, customMessage?: string) {
