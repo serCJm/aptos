@@ -3,7 +3,9 @@ import { logger } from "../utils/logger.js";
 import { getDeadline } from "../utils/utils.js";
 
 export class WalletManager {
-	static #rpcUrl = "https://rpc.ankr.com/http/aptos/v1";
+	// https://fullnode.mainnet.aptoslabs.com/v1
+	// https://rpc.ankr.com/http/aptos/v1
+	static #rpcUrl = "https://fullnode.mainnet.aptoslabs.com/v1";
 	static #explorer = "https://apscan.io";
 	static #name: string;
 	static #account: AptosAccount | null = null;
