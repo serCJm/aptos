@@ -1,3 +1,4 @@
+import { APT_MINTED } from "../../resources/aptMapMinted.js";
 import { WalletManager } from "../services/wallet-manager.js";
 import { DEX } from "./dex.js";
 
@@ -14,7 +15,7 @@ export class Mint extends DEX {
 
 		const moveFunction = `${Mint.contractAddress}::apt_map::mint_aptmap`;
 
-		const block = await this.#getBlock();
+		const block = this.#getBlock();
 
 		const type_arguments: any = [];
 
@@ -31,5 +32,11 @@ export class Mint extends DEX {
 		await WalletManager.sendTransaction(txPayload, message);
 	}
 
-	async #getBlock() {}
+	#getBlock() {
+		const minted = APT_MINTED;
+		for (let i = 1; i <= 100000; i++) {
+			if (minted.includes(i.toString())) continue;
+			return i.toString();
+		}
+	}
 }
