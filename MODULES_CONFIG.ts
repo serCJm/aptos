@@ -1,5 +1,6 @@
 import { AnimeSwap } from "./src/modules/animeSwap.js";
 import { LiquidSwap } from "./src/modules/liquidSwap.js";
+import { Mint } from "./src/modules/mint.js";
 import { PancakeSwap } from "./src/modules/pancakeSwap.js";
 import { ModulesConfig, ORDER } from "./src/types.js";
 
@@ -7,20 +8,24 @@ export const MODULE_MAP = {
 	LiquidSwap,
 	PancakeSwap,
 	AnimeSwap,
+	Mint,
 } as const;
 
 export const MODULES_CONFIG: Record<string, ModulesConfig> = {
 	[LiquidSwap.name]: {
-		ENABLED: true,
+		ENABLED: false,
 		EXCLUDED_TOKENS: [],
 	},
 	[PancakeSwap.name]: {
-		ENABLED: true,
+		ENABLED: false,
 		EXCLUDED_TOKENS: [],
 	},
 	[AnimeSwap.name]: {
-		ENABLED: true,
+		ENABLED: false,
 		EXCLUDED_TOKENS: [],
+	},
+	[Mint.name]: {
+		ENABLED: true,
 	},
 };
 
