@@ -1,17 +1,16 @@
 import { APT_MINTED } from "../../resources/aptMapMinted.js";
 import { WalletManager } from "../services/wallet-manager.js";
-import { DEX } from "./dex.js";
+import { BaseModule } from "./baseModule.js";
 
-export class Mint extends DEX {
+export class Mint extends BaseModule {
 	static contractAddress =
 		"0x3ff12c840442b037a97770807084b7bab31b4b02c06cccbaf9350b1edb2fb450";
 
 	constructor() {
 		super();
 	}
-	async swap() {
+	async #mint() {
 		this.logStart("mint");
-		const amount = this.setupAmount();
 
 		const moveFunction = `${Mint.contractAddress}::apt_map::mint_aptmap`;
 
@@ -19,7 +18,7 @@ export class Mint extends DEX {
 
 		const type_arguments: any = [];
 
-		const txArgs = [block];
+		const txArgs = [[block]];
 
 		const txPayload = {
 			function: moveFunction,
@@ -27,7 +26,7 @@ export class Mint extends DEX {
 			arguments: txArgs,
 		};
 
-		const message = this.createSwapMessage(amount);
+		const message = "Mint Apt Map";
 
 		await WalletManager.sendTransaction(txPayload, message);
 	}
@@ -38,5 +37,9 @@ export class Mint extends DEX {
 			if (minted.includes(i.toString())) continue;
 			return i.toString();
 		}
+	}
+
+	async run() {
+		await this.#mint();
 	}
 }
